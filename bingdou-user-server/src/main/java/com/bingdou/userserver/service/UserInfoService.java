@@ -3,7 +3,6 @@ package com.bingdou.userserver.service;
 import com.bingdou.core.helper.BaseRequest;
 import com.bingdou.core.helper.ServiceResult;
 import com.bingdou.core.helper.ServiceResultUtil;
-import com.bingdou.core.model.Application;
 import com.bingdou.core.model.User;
 import com.bingdou.core.model.UserToken;
 import com.bingdou.core.service.BaseService;

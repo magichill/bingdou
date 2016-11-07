@@ -80,7 +80,7 @@ public class LoginService extends BaseService implements IMethodService {
 //    private ServiceResult dealLogin(LoginRequest loginRequest, Application application,
 //                                    HttpServletRequest request) throws Exception {
     private ServiceResult dealLogin(LoginRequest loginRequest,
-                                HttpServletRequest request) throws Exception {
+                                    HttpServletRequest request) throws Exception {
         if (StringUtils.isEmpty(loginRequest.getAccount())) {
             return ServiceResultUtil.illegal("ÕÊºÅÎª¿Õ");
         }
