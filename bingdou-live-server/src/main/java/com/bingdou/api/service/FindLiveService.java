@@ -12,10 +12,11 @@ import javax.servlet.http.HttpServletRequest;
  * Created by gaoshan on 16-11-4.
  */
 @Service
-public class GiftListService implements IMethodService{
+public class FindLiveService implements IMethodService {
+
     @Override
     public String getMethodName() {
-        return "gift_list";
+        return "find_live";
     }
 
     @Override

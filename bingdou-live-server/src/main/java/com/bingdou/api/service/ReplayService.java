@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by gaoshan on 16-11-4.
+ * Created by gaoshan on 16-11-7.
  */
 @Service
-public class GiftListService implements IMethodService{
+public class ReplayService implements IMethodService{
+
     @Override
     public String getMethodName() {
-        return "gift_list";
+        return "replay";
     }
 
     @Override
