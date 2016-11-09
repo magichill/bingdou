@@ -1,10 +1,7 @@
 package com.bingdou.core.model;
 
 import com.bingdou.core.constants.DBConstants;
-import com.bingdou.tools.CodecUtils;
-import com.bingdou.tools.DateUtil;
-import com.bingdou.tools.NumberUtil;
-import com.bingdou.tools.ValidateUtil;
+import com.bingdou.tools.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.StringUtils;
 
@@ -218,28 +215,7 @@ public class User {
      * @throws Exception
      */
     public static int getTableNumber(int userId) throws Exception {
-        if (userId > 0 && userId <= 5000000) {
-            return 1;
-        } else if (userId > 5000000 && userId <= 10000000) {
-            return 2;
-        } else if (userId > 10000000 && userId <= 15000000) {
-            return 3;
-        } else if (userId > 15000000 && userId <= 20000000) {
-            return 4;
-        } else if (userId > 20000000 && userId <= 25000000) {
-            return 5;
-        } else if (userId > 25000000 && userId <= 30000000) {
-            return 6;
-        } else if (userId > 30000000 && userId <= 35000000) {
-            return 7;
-        } else if (userId > 35000000 && userId <= 40000000) {
-            return 8;
-        } else if (userId > 40000000 && userId <= 45000000) {
-            return 9;
-        } else if (userId > 45000000 && userId <= 50000000) {
-            return 10;
-        }
-        throw new Exception("用户子表个数已到达边界");
+        return IndexUtil.getTableNumber(userId);
     }
 
     public UserStatus getUserStatus() {

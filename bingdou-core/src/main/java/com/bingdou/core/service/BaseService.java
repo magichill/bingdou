@@ -66,15 +66,14 @@ public abstract class BaseService {
     /**
      * 检查服务器端应用合法性
      */
-    //TODO 注释 暂未做
-//    public boolean isApplicationValid4Server(BaseRequest request) {
-//        LogContext.instance().info("检查APP ID是否合法");
-//        if (StringUtils.isEmpty(request.getAppId())) {
-//            return false;
-//        }
-//        Application application = appBaseService.getAppByAppId(request.getAppId());
-//        return application != null && application.getId() > 0;
-//    }
+    public boolean isApplicationValid4Server(BaseRequest request) {
+        LogContext.instance().info("检查APP ID是否合法");
+        if (StringUtils.isEmpty(request.getAppId())) {
+            return false;
+        }
+        Application application = appBaseService.getAppByAppId(request.getAppId());
+        return application != null && application.getId() > 0;
+    }
 
     /**
      * 检查TOKEN合法性
