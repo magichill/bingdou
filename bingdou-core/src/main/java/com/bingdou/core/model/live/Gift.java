@@ -1,31 +1,26 @@
-package com.bingdou.api.response;
-
-import com.google.gson.annotations.SerializedName;
+package com.bingdou.core.model.live;
 
 /**
- * 礼物列表响应
- * Created by gaoshan on 16-11-4.
+ * Created by gaoshan on 16-11-9.
  */
-public class GiftListResponse {
+public class Gift {
 
-    @SerializedName("gift_id")
-    private int giftId = 0;
+    private int id;
 
-    @SerializedName("gift_title")
-    private String giftTitle = "";
+    private String giftTitle;
 
-    @SerializedName("gift_pic")
     private String giftPic;
 
-    @SerializedName("gift_type")
     private int giftType;
 
-    public int getGiftId() {
-        return giftId;
+    private int status;
+
+    public int getId() {
+        return id;
     }
 
-    public void setGiftId(int giftId) {
-        this.giftId = giftId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getGiftTitle() {
@@ -50,5 +45,13 @@ public class GiftListResponse {
 
     public void setGiftType(int giftType) {
         this.giftType = giftType;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
