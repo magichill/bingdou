@@ -3,6 +3,8 @@ package com.bingdou.core.mapper.live;
 import com.bingdou.core.model.Live;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * Created by gaoshan on 16-11-8.
  */
@@ -15,4 +17,6 @@ public interface ILiveMapper {
                  @Param("pullStream") String pullStream);
 
     Live getLiveById(@Param("liveId") int liveId);
+
+    List<Live> getLiveList(@Param("start") int start, @Param("limit") int limit);
 }

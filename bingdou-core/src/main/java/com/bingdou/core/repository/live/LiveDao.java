@@ -5,6 +5,8 @@ import com.bingdou.core.model.Live;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by gaoshan on 16-11-8.
  */
@@ -24,5 +26,9 @@ public class LiveDao {
 
     public Live getLiveById(int liveId){
         return liveMapper.getLiveById(liveId);
+    }
+
+    public List<Live> getLiveList(int start,int limit){
+        return liveMapper.getLiveList(start,limit);
     }
 }

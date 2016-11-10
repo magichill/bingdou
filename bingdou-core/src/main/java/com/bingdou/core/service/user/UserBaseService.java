@@ -29,10 +29,6 @@ public class UserBaseService {
     @Autowired
     private IUserCacheManager userCacheManager;
 
-    public UserToken testRedis(){
-        userCacheManager.setUserValidateToken(1,"xxxx");
-        return userCacheManager.getUserToken(1);
-    }
     /**
      * 通过手机号获取用户详细信息
      *

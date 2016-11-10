@@ -17,7 +17,7 @@ public class FindLiveRequest extends BaseRequest{
     /**
      * 条数
      */
-    @SerializedName("password")
+    @SerializedName("limit")
     private int limit = 10;
 
     @Override

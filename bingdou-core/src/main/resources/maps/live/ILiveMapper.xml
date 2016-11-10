@@ -30,9 +30,11 @@
         ]]>
     </insert>
 
-    <update id="updateLive">
-
-    </update>
+    <select id="getLiveList" parameterType="java.util.Map" resultMap="liveDetail">
+        <![CDATA[
+        SELECT id FROM ${liveDB}.lc_live_index WHERE status=1 order by update_time limit #{start},#{limit}
+        ]]>
+    </select>
 
     <resultMap id="liveDetail" type="com.bingdou.core.model.Live">
         <result property="id" column="id"/>
@@ -42,7 +44,6 @@
         <result property="mid" column="mid"/>
         <result property="pushStream" column="push_stream"/>
         <result property="pullStream" column="pull_stream"/>
-
     </resultMap>
 
 </mapper>

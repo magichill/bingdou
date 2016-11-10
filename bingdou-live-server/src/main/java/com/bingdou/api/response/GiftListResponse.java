@@ -2,53 +2,22 @@ package com.bingdou.api.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * 礼物列表响应
  * Created by gaoshan on 16-11-4.
  */
 public class GiftListResponse {
 
-    @SerializedName("gift_id")
-    private int giftId = 0;
+    @SerializedName("gift_info_list")
+    private List<GiftResponse> giftInfoList;
 
-    @SerializedName("gift_title")
-    private String giftTitle = "";
-
-    @SerializedName("gift_pic")
-    private String giftPic;
-
-    @SerializedName("gift_type")
-    private int giftType;
-
-    public int getGiftId() {
-        return giftId;
+    public List<GiftResponse> getGiftInfoList() {
+        return giftInfoList;
     }
 
-    public void setGiftId(int giftId) {
-        this.giftId = giftId;
-    }
-
-    public String getGiftTitle() {
-        return giftTitle;
-    }
-
-    public void setGiftTitle(String giftTitle) {
-        this.giftTitle = giftTitle;
-    }
-
-    public String getGiftPic() {
-        return giftPic;
-    }
-
-    public void setGiftPic(String giftPic) {
-        this.giftPic = giftPic;
-    }
-
-    public int getGiftType() {
-        return giftType;
-    }
-
-    public void setGiftType(int giftType) {
-        this.giftType = giftType;
+    public void setGiftInfoList(List<GiftResponse> giftInfoList) {
+        this.giftInfoList = giftInfoList;
     }
 }
