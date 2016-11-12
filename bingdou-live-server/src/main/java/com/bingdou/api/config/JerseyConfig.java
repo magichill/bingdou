@@ -11,6 +11,6 @@ public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
         register(RequestContextFilter.class);
-        packages("com.bingdou.live.api.controller");
+        packages("com.bingdou.api.controller");
     }
 }
