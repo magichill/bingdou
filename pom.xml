@@ -18,6 +18,7 @@
         <module>bingdou-core</module>
         <module>bingdou-user-server</module>
         <module>bingdou-tools</module>
+        <module>bingdou-cdn-server</module>
     </modules>
 
     <parent>

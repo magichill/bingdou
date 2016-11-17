@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd"
        default-lazy-init="true">
 
-    <context:component-scan base-package="com.bingdou.live.userserver">
+    <context:component-scan base-package="com.bingdou.userserver">
       <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 

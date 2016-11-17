@@ -6,7 +6,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +32,7 @@ public class HttpClientUtil {
     private static HttpClient httpClient;
     private static final String GET_METHOD = "Get Method";
     private static final String POST_METHOD = "Post Method";
+    private static final String PUT_METHOD = "Put Method";
     private static final String UTF_8 = "UTF-8";
     private static final int DEFAULT_TIMEOUT_FLAG = -1;
 
@@ -113,6 +116,7 @@ public class HttpClientUtil {
                 connectionTimeout, readTimeout);
     }
 
+
     public static String doPostByContentTypeHttpClient(String bizName, String url, String param, String contentType,
                                                        int connectionTimeout, int readTimeout) throws Exception {
         String uuid = CodecUtils.getRequestUUID();
@@ -131,6 +135,59 @@ public class HttpClientUtil {
                 byte[] bytes = method.getResponseBody();
                 String charset = method.getResponseCharSet();
                 result = new String(bytes, Charset.forName(charset));
+            } else {
+                throw new Exception("返回码不是200(" + method.getStatusCode() + ")");
+            }
+            writeResultLog(bizName, result, method.getStatusCode(), uuid);
+        } catch (Exception e) {
+            logger.error(uuid + " - " + bizName + "请求异常", e);
+            throw e;
+        } finally {
+            method.releaseConnection();
+            writeTimeLog(bizName, startTime, uuid);
+        }
+        return result;
+    }
+
+    public static String doPostJsonOrXmlHttpClient(String bizName, String url, String param, boolean isXml,Map<String,String> headerMap,
+                                                   int connectionTimeout, int readTimeout) throws Exception {
+        String contentType = "application/json";
+        if (isXml) {
+            contentType = "text/xml";
+        }
+        return doPostByContentTypeHttpClient(bizName, url, param, contentType,headerMap,
+                connectionTimeout, readTimeout);
+    }
+
+    public static String doPostByContentTypeHttpClient(String bizName, String url, String param, String contentType,Map<String,String> headerMap,
+                                                       int connectionTimeout, int readTimeout) throws Exception {
+        String uuid = CodecUtils.getRequestUUID();
+        logger.info(uuid + " - " + bizName + "请求开始 - " + POST_METHOD + " - " + url);
+        long startTime = System.currentTimeMillis();
+        String result = null;
+        PostMethod method = new PostMethod(url);
+        try {
+            logger.info(uuid + " - xml/json参数 - " + param);
+            StringRequestEntity entity = new StringRequestEntity(param, contentType, UTF_8);
+            if (headerMap != null && !headerMap.isEmpty()) {
+                StringBuilder headerLogStr = new StringBuilder();
+                Set<Map.Entry<String, String>> heads = headerMap.entrySet();
+                for (Map.Entry<String, String> head : heads) {
+                    method.setRequestHeader(head.getKey(), head.getValue());
+                    headerLogStr.append("[").append(head.getKey()).append(" : ")
+                            .append(head.getValue()).append("]");
+                }
+                logger.info(uuid + " - header参数 - " + headerLogStr);
+            }
+            method.setRequestEntity(entity);
+            method.getParams().setContentCharset(UTF_8);
+            setTimeout(connectionTimeout, readTimeout);
+            httpClient.executeMethod(method);
+            if (method.getStatusCode() == HttpStatus.SC_OK) {
+                byte[] bytes = method.getResponseBody();
+                String charset = method.getResponseCharSet();
+                result = new String(bytes, Charset.forName(charset));
+                System.out.println(result);
             } else {
                 throw new Exception("返回码不是200(" + method.getStatusCode() + ")");
             }
@@ -197,6 +254,67 @@ public class HttpClientUtil {
         return result;
     }
 
+
+    public static String doPutHttpClient(String bizName, String url, Map<String, String> headerMap,
+                                          Map<String, Object> paramsMap,
+                                          int connectionTimeout, int readTimeout) throws Exception {
+        String uuid = CodecUtils.getRequestUUID();
+        logger.info(uuid + " - " + bizName + "请求开始 - " + PUT_METHOD + " - " + url);
+        long startTime = System.currentTimeMillis();
+        String result = null;
+        PutMethod method = new PutMethod(url);
+        try {
+            if (paramsMap != null && !paramsMap.isEmpty()) {
+                StringBuilder paramsLogStr = new StringBuilder();
+                Set<Map.Entry<String, Object>> entries = paramsMap.entrySet();
+//                List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                HttpMethodParams params = new HttpMethodParams();
+//                for (Map.Entry<String, Object> param : entries) {
+////                    pairs.add(new NameValuePair(param.getKey(), param.getValue()));
+//                    params.setParameter(param.getKey(),param.getValue());
+//                    paramsLogStr.append("[").append(param.getKey()).append(" : ")
+//                            .append(param.getValue()).append("]");
+//                }
+                method.setRequestBody(JsonUtil.bean2JsonStr(entries));
+                logger.info(uuid + " - 参数 - " + paramsLogStr);
+//                method.setRequestBody(pairs.toArray(new NameValuePair[pairs.size()]));
+                method.setParams(params);
+            }
+            if (headerMap != null && !headerMap.isEmpty()) {
+                StringBuilder headerLogStr = new StringBuilder();
+                Set<Map.Entry<String, String>> heads = headerMap.entrySet();
+                for (Map.Entry<String, String> head : heads) {
+                    method.setRequestHeader(head.getKey(), head.getValue());
+                    headerLogStr.append("[").append(head.getKey()).append(" : ")
+                            .append(head.getValue()).append("]");
+                }
+                logger.info(uuid + " - header参数 - " + headerLogStr);
+            }
+            method.getParams().setContentCharset(UTF_8);
+            method.addRequestHeader( "Content-Type","application/json" );
+            setTimeout(connectionTimeout, readTimeout);
+            httpClient.executeMethod(method);
+            if (method.getStatusCode() == HttpStatus.SC_OK) {
+                byte[] bytes = method.getResponseBody();
+                String charset = method.getResponseCharSet();
+                result = new String(bytes, Charset.forName(charset));
+            } else {
+                byte[] bytes = method.getResponseBody();
+                String charset = method.getResponseCharSet();
+                result = new String(bytes, Charset.forName(charset));
+                System.out.println(result);
+                throw new Exception("返回码不是200(" + method.getStatusCode() + ")");
+            }
+            writeResultLog(bizName, result, method.getStatusCode(), uuid);
+        } catch (Exception e) {
+            logger.error(uuid + " - " + bizName + "请求异常", e);
+            throw e;
+        } finally {
+            method.releaseConnection();
+            writeTimeLog(bizName, startTime, uuid);
+        }
+        return result;
+    }
     private static void setTimeout(int connectionTimeout, int readTimeout) {
         if (isDefaultConfig(connectionTimeout, readTimeout)) {
             String connTimeout = prop.getProperty("httpConnectionManagerParams.connectionTimeout");

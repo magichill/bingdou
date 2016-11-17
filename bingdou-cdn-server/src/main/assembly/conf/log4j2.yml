@@ -1,0 +1,106 @@
+Configuration:
+  status: off
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      #测试：-Dlog.level.console=warn -Dlog.level.bd=trace
+      #生产：-Dlog.level.console=warn -Dlog.level.bd=info
+      - name: rootLoggerLevel
+        value: INFO
+      - name: bizLoggerLevel
+        value: INFO
+      - name: exceptionLoggerLevel
+        value: ERROR
+      - name: baseLogPath
+        value: /tmp/livecdnserver-log
+      - name: dataLogPath
+        value: "${baseLogPath}/data"
+      - name: commonLogPath
+        value: "${baseLogPath}/common"
+      - name: logPattern
+        value: "%d{yyyy-MM-dd HH:mm:ss:SSS} - %p - %msg%ex%n"
+      - name: hadoopLogPattern
+        value: "%msg%n"
+      - name: dailyRollingFilePattern
+        value: "%d{yyyy-MM-dd}"
+      - name: hourRollingFilePattern
+        value: "%d{yyyy-MM-dd-HH}"
+      - name: exceptionLogFileName
+        value: "${commonLogPath}/Exception_DailyRolling.log"
+      - name: timerCalculatorLogFileName
+        value: "${commonLogPath}/timerCalculator_DailyRolling.log"
+      - name: httpClientLogFileName
+        value: "${commonLogPath}/httpClientLog_DailyRolling.log"
+      - name: monitorLogFileName
+        value: "${commonLogPath}/monitor_DailyRolling.log"
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: trace # “sys:”表示：如果VM参数中没指定这个变量值，则使用本文件中定义的缺省全局变量值
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: "${logPattern}"
+    RollingFile: # 输出到文件，超过128MB归档
+      - name: timerCalculator_LogAppender
+        ignoreExceptions: false
+        fileName: "${timerCalculatorLogFileName}"
+        filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "128 MB"
+        DefaultRolloverStrategy:
+          max: 1000
+    RollingFile: # 输出到文件，超过128MB归档
+      - name: httpClient_LogAppender
+        ignoreExceptions: false
+        fileName: "${httpClientLogFileName}"
+        filePattern: "${httpClientLogFileName}.${dailyRollingFilePattern}"
+        PatternLayout:
+          pattern: "${logPattern}"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "128 MB"
+        DefaultRolloverStrategy:
+          max: 1000
+    RollingFile: # 输出到文件，超过128MB归档
+          - name: exception_LogAppender
+            ignoreExceptions: false
+            fileName: "${exceptionLogFileName}"
+            filePattern: "${exceptionLogFileName}.${dailyRollingFilePattern}"
+            PatternLayout:
+              pattern: "${logPattern}"
+            Policies:
+              SizeBasedTriggeringPolicy:
+                size: "128 MB"
+            DefaultRolloverStrategy:
+              max: 1000
+            ThresholdFilter:
+              level: "${exceptionLoggerLevel}"
+              onMatch: ACCEPT
+              onMismatch: DENY
+  Loggers:
+    Root:
+      level: "${rootLoggerLevel}"
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: exception_LogAppender
+    Logger:
+      - name: timerCalculator_Logger
+        additivity: false
+        level: "${bizLoggerLevel}"
+        AppenderRef:
+          - ref: timerCalculator_LogAppender
+          - ref: exception_LogAppender
+    Logger:
+      - name: httpClient_Logger
+        additivity: false
+        level: "${bizLoggerLevel}"
+        AppenderRef:
+          - ref: httpClient_LogAppender
+          - ref: exception_LogAppender
